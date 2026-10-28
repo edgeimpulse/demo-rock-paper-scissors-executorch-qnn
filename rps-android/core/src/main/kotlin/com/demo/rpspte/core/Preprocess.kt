@@ -31,7 +31,7 @@ class RgbaFrame(
 /**
  * Turns a camera frame into the tensor the .pte expects.
  *
- * This is the Android twin of Classifier.preprocess in rps.py / pte_perception.py:
+ * This is the Android twin of Classifier.preprocess in rps.py / perception_pte.py:
  *
  *     rotate upright -> centre ROI square -> cv2.resize(INTER_LINEAR) -> RGB -> /255 -> NCHW
  *

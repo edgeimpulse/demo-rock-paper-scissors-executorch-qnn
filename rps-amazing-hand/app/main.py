@@ -41,7 +41,7 @@ from commentary import LlamaCppCommentator, NullCommentator
 from data_model import Detection, MatchConfig, Phase, Strategy
 from game import GameEngine
 from perception import CameraSource
-from pte_perception import PteGestureDetector
+from perception_pte import PteGestureDetector
 from speech import MeloTtsSpeaker, NullSpeaker, PiperSpeaker
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"

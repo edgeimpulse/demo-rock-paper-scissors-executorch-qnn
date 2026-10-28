@@ -64,7 +64,7 @@ Both print a line such as `paper 0.012   rock 0.973   …`. They should agree to
 | Game | Python game loop | `core/GameEngine.kt`, ported from it |
 | Output | softmax built into the CPU `.pte` | the same; logits are softmaxed if a model returns them |
 
-The game rules come from the first standalone IQ‑9075 game script (`rps.py`, referenced in code comments; its detector lives on as `rps-amazing-hand/app/pte_perception.py`): a 3-2-1 countdown, SHOOT, a 0.2 s settle, 8 sampled frames, a frame needs confidence ≥ 0.40 and a gesture class (not `unknown`) to vote, the phone picks at random, and the result is held for 3 s.
+The game rules come from the first standalone IQ‑9075 game script (`rps.py`, referenced in code comments; its detector lives on as `rps-amazing-hand/app/perception_pte.py`): a 3-2-1 countdown, SHOOT, a 0.2 s settle, 8 sampled frames, a frame needs confidence ≥ 0.40 and a gesture class (not `unknown`) to vote, the phone picks at random, and the result is held for 3 s.
 
 ## Design choices
 
