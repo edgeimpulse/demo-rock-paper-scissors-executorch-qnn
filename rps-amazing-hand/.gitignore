@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Large / machine-specific artifacts that are trained, fetched or built, never
+# committed. The models are yours to train (see README); a trained model is a
+# derivative of its training data, so none is distributed with this repository.
+models/*.pte
+models/*.gguf
+models/piper/
+pkg-linux/
+pkg-linux.zip
+
+# macOS
+.DS_Store
+
+# Runtime caches and captured frames
+.cache/
+*.log
