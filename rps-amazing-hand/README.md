@@ -8,7 +8,7 @@ Human gesture classification uses the ExecuTorch models produced by the [example
 
 Round commentary comes from Llama 3.2 1B running on the same NPU through llama.cpp's Hexagon backend.
 
-> Two detectors ship side by side. The ExecuTorch one (`PteGestureDetector`, in `app/pte_perception.py`) is the one wired in. An Edge Impulse `.eim` detector (`EIGestureDetector`, in `app/perception.py`) is kept for an A/B comparison on the same hardware.
+> Two detectors ship side by side. The ExecuTorch one (`PteGestureDetector`, in `app/perception_pte.py`) is the one wired in. An Edge Impulse `.eim` detector (`EIGestureDetector`, in `app/perception.py`) is kept for an A/B comparison on the same hardware.
 
 The browser displays the live camera feed, gesture classification, a captured result frame, the round history, live match status, and commentary.
 
@@ -167,7 +167,7 @@ Browser (HTML/CSS/JavaScript)
 FastAPI application (app/main.py)
         |
         +-- GameEngine (app/game.py)
-        |     +-- GestureDetector  -> PteGestureDetector (app/pte_perception.py)
+        |     +-- GestureDetector  -> PteGestureDetector (app/perception_pte.py)
         |     |                         +-- HybridClassifier (app/npu_inference.py)
         |     |                               +-- NpuClient (app/npu_client.py) -> rps-npu service (NPU)
         |     |                               +-- ExecuTorch runtime + models/model.pte (CPU fallback)
@@ -192,7 +192,7 @@ The actuator, commentator and speaker are chosen from environment flags (`ENABLE
 
 ### Detector
 
-The active gesture detector is `PteGestureDetector` in `app/pte_perception.py`. It reads frames from `CameraSource`, classifies them on the NPU with CPU fallback (see [How gesture classification works](#how-gesture-classification-works)), and reports gestures against a fixed centred target box, `ROI_FRACTION` of the frame. The model is a classifier, so it produces no bounding boxes of its own. The original `.eim` based object detector class, `EIGestureDetector`, is still in `app/perception.py`.
+The active detector is `PteGestureDetector` in `app/perception_pte.py`. It reads frames from `CameraSource`, classifies them on the NPU with CPU fallback (see [How detection works](#how-detection-works)), and reports gestures against a fixed centred target box, `ROI_FRACTION` of the frame. The model is a classifier, so it produces no bounding boxes of its own. The original `.eim` object detector, `EIGestureDetector`, is still in `app/perception.py`.
 
 A detector must satisfy the `GestureDetector` protocol:
 
@@ -742,7 +742,7 @@ app/
   config.py        All tunable Python settings and environment reads
   data_model.py    Phases, gestures, match records, and MatchConfig
   perception.py    Camera capture and the original .eim gesture detector
-  pte_perception.py  ExecuTorch detector: preprocessing, NPU/CPU inference, smoothing and gates
+  perception_pte.py  ExecuTorch detector: preprocessing, NPU/CPU inference, smoothing and gates
   npu_inference.py   HybridClassifier: NPU first, per-frame CPU fallback
   npu_client.py      Client for the rps-npu socket protocol (no dependencies beyond numpy)
   overlay.py       Server-side detection-box rendering onto frames

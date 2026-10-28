@@ -215,7 +215,7 @@ class RpsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     companion object {
-        /** The classified square is this % of the frame's shorter side (pte_perception ROI_FRACTION 0.6). */
+        /** The classified square is this % of the frame's shorter side (perception_pte ROI_FRACTION 0.6). */
         const val ROI_PERCENT = 60
     }
 }

@@ -130,7 +130,7 @@ The same source builds on a laptop against the pip wheel's C++ SDK with XNNPACK 
 
 ## 5. In the demo app
 
-`app/pte_perception.py` → `HybridClassifier` (`app/npu_inference.py`) → `NpuClient` (`app/npu_client.py`):
+`app/perception_pte.py` → `HybridClassifier` (`app/npu_inference.py`) → `NpuClient` (`app/npu_client.py`):
 
 - **Each frame:**
   1. Center-crop, resize to the **NPU model's** input size (from INFO), RGB, /255, NCHW.
