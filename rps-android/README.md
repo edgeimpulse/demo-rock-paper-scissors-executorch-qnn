@@ -1,20 +1,22 @@
-# Rock-paper-scissors on Android: the same `model.pte` on a phone
+# Rock Paper Scissors: Android Phone (ExecuTorch)
 
-A small native Android app that plays rock-paper-scissors with the **same ExecuTorch `model.pte`** that runs on the IQ‑9075's CPU. The phone's own camera is the input. The model runs on the phone's CPU through ExecuTorch's Android runtime, and the screen shows which model file is running (a hash) and how long each inference takes.
+This demo is a small native Android app for playing a game of rock, paper, scissors against the phone. The phone's own camera is the input for the human gesture. The model runs on the phone's CPU through ExecuTorch's Android runtime, and the screen shows the a video feed preview, which model file is running (a hash), and how long each inference takes.
 
-Nothing about the model changes between a Linux board, a laptop and a phone — only the app around it.
+The app uses the same model, `model.pte`, an output artifact from [example-executorch-qnn](https://github.com/edgeimpulse/example-executorch-qnn), that can be used on a Linux device. Nothing about the model changes between a Linux device (e.g., the Qualcomm Dragonwing™ IQ-9075 EVK) or a phone — only the app around it.
 
 ```text
 IQ-9075:  USB camera   → Python preprocess → executorch (Python)         → XNNPACK → FastAPI game + web UI
+
 Android:  phone camera → Kotlin preprocess → executorch-android (AAR)     → XNNPACK → Compose game UI
-                                 same model.pte, same preprocessing, same game rules
+
+same model.pte, same preprocessing, same game rules
 ```
 
 ## Prerequisites
 
 - **Android Studio** (Ladybug or newer). It brings its own JDK and Gradle.
 - **An Android phone** on Android 8.0 (API 26) or newer with a 64-bit Arm CPU (`arm64-v8a`, which is nearly every phone from the last several years), with **USB debugging** on.
-- **A `model.pte` and its `labels.txt`.** Use the CPU program, not `model_qnn.pte`. No model is checked into this repository, so take the pair from your own `deploy.zip`, or from the learning block's output if you ran it locally.
+- **A `model.pte` and its `labels.txt`.** Use the CPU program, not `model_qnn.pte`. No model is checked into this repository; it must be generated using the [example-executorch-qnn](https://github.com/edgeimpulse/example-executorch-qnn) repo.
 - **Optional, for the parity check:** Python with `executorch`, `opencv-python` and `numpy`.
 
 ## Quick start
@@ -51,7 +53,7 @@ A model can "work" but report the wrong class because of preprocessing or label 
 
 Both print a line such as `paper 0.012   rock 0.973   …`. They should agree to about two decimals. If they don't, the cause is the preprocessing or `labels.txt`, not the model. Both sides read the photo without applying its EXIF rotation, so use an image that is already upright.
 
-## What is the same as on the IQ‑9075, and what is not
+## What is the same as on the IQ‑9075 EVK, and what is not
 
 | | IQ‑9075 (CPU path) | Android |
 |---|---|---|
