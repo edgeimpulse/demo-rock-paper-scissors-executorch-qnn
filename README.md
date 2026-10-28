@@ -1,4 +1,4 @@
-# Rock-paper-scissors demos with ExecuTorch models
+# Rock-paper-scissors Demos with ExecuTorch Models
 
 This repo contains two separate rock-paper-scissors demos. One version is a web app that runs on any Linux machine. The other is an Android version that runs on a mobile phone. 
 
