@@ -1,34 +1,34 @@
 # Rock Paper Scissors: The Amazing Hand (ExecuTorch + Hexagon NPU)
 
-This is the demo that sits on top of this repository's custom blocks. It is a camera-driven rock-paper-scissors game built with FastAPI and OpenCV: show a hand gesture to the camera during the capture window and play against The Amazing Hand.
+This demo is a camera-driven rock-paper-scissors web app game built with FastAPI and OpenCV: show a hand gesture to the camera during the capture window and play against the Amazing Hand.
 
-Gesture recognition uses the **ExecuTorch models produced by the [learning block](https://github.com/edgeimpulse/example-executorch-qnn/tree/main/blocks/learning-image-classifier)**:
-- `model_qnn.pte` on the **Hexagon NPU**, served by the [`rps-npu` service](https://github.com/edgeimpulse/example-executorch-qnn/tree/main/board)
-- `models/model.pte` on the **CPU** as a per-frame fallback
+Human gesture classification uses the ExecuTorch models produced by the [example-executorch-qnn](https://github.com/edgeimpulse/example-executorch-qnn) repo:
+- `model_qnn.pte` on the Hexagon NPU, served by the [`rps-npu` service](https://github.com/edgeimpulse/example-executorch-qnn/tree/main/board)
+- `models/model.pte` on the CPU as a per-frame fallback
 
 Round commentary comes from Llama 3.2 1B running on the same NPU through llama.cpp's Hexagon backend.
 
 > Two detectors ship side by side. The ExecuTorch one (`PteGestureDetector`, in `app/perception_pte.py`) is the one wired in. An Edge Impulse `.eim` detector (`EIGestureDetector`, in `app/perception.py`) is kept for an A/B comparison on the same hardware.
 
-The browser displays the live camera feed, detected gesture boxes, a captured result frame, the round history, live match status, and commentary.
+The browser displays the live camera feed, gesture classification, a captured result frame, the round history, live match status, and commentary.
 
 ![Rock, Paper, Scissors browser UI](assets/images/rps-ah-ui.png)
 
 ## Requirements
 
-- A Linux host with a USB camera exposed as a V4L2 device such as `/dev/video0`. This can be the IQ‑9075 EVK or any Linux laptop.
-- Python 3.10 or later
-- `models/model.pte`, a CPU XNNPACK classifier, and `models/labels.txt` (one label per line, in output order). Neither is checked in: train the classifier with the [learning block](https://github.com/edgeimpulse/example-executorch-qnn/tree/main/blocks/learning-image-classifier) in the example repository and copy both files into `models/`. The input size is read from the model at startup, so a 96×96 or 160×160 export both work.
-- Camera permissions for the user running the app
+- A Linux host with a USB camera exposed as a V4L2 device such as `/dev/video0`. This can be the Qualcomm Dragonwing™ IQ‑9075 EVK or any Linux machine.
+- Python 3.10 or later.
+- `models/model.pte`, a CPU XNNPACK classifier, and `models/labels.txt` (one label per line, in output order). Train the classifier with the [learning block](https://github.com/edgeimpulse/example-executorch-qnn/tree/main/blocks/learning-image-classifier) in the example repository and copy both files into `models/`. The input size is read from the model at startup, so a 96×96 or 160×160 export both work.
+- Camera permissions for the user running the app.
 - **Optional:**
   - The NPU: the `rps-npu` service from [`board/`](https://github.com/edgeimpulse/example-executorch-qnn/blob/main/board/README.md) (IQ‑9075 only)
   - The Amazing Hand on a serial port
   - A Hexagon llama.cpp build plus a GGUF model, for commentary
   - A Piper voice and any PCM audio player, for spoken commentary
 
-With none of the optional pieces, the game still runs. Detection uses the CPU, and the hand, commentary and speech are each skipped with a message saying which piece is missing and how to add it.
+With none of the optional pieces, the game still runs. Classification uses the CPU, and the hand, commentary and speech are each skipped with a message saying which piece is missing and how to add it.
 
-## How detection works
+## How gesture classification works
 
 ```text
 camera frame ─► centre-crop square ─► resize ─► RGB ─► /255 ─► NCHW float32
@@ -43,10 +43,13 @@ smooth the last N probability vectors ─► gates (confidence, margin, max "unk
 
 - **`HybridClassifier`** (`app/npu_inference.py`) tries the NPU for every frame. If a call fails, it answers that frame on the CPU and retries the NPU every 5 s. It logs `NPU ACTIVE` or `CPU FALLBACK` whenever the backend changes.
 - **Each backend gets its own input size.** The NPU and CPU models can be different exports. Here the NPU model is 96×96 and the CPU one is 160×160. Only the class count has to match `labels.txt`.
-- **No gesture is a valid answer.** The classifier has no "is there a hand?" output, so an empty frame still gets a class. The gates decide when a frame counts. A rejected frame produces no detection, and the round resolves as "no gesture captured". Tune the gates live with `RPS_LOG_PROBS=1` (see [Configuration](#configuration-and-defaults)).
+- **No gesture is a valid answer.** The classifier has no "is there a hand?" output, so an empty frame still gets a class. The gates decide when a frame counts. A rejected frame produces no classification, and the round resolves as "no gesture captured". Tune the gates live with `RPS_LOG_PROBS=1` (see [Configuration](#configuration-and-defaults)).
 - **No board?** The [example repository](https://github.com/edgeimpulse/example-executorch-qnn) ships `tools/mock_npu_server.py`, a CPU stand-in that speaks the same socket protocol. Run `python tools/mock_npu_server.py --model model.pte --socket /tmp/rps-npu.sock` from a checkout of that repository, then `RPS_NPU_SOCKET=/tmp/rps-npu.sock ./start.sh` here. The same code path runs, with a CPU double where the NPU would be.
 
 ## Setup
+
+> [!NOTE]
+> These instructions assume the IQ-9075 EVK 
 
 ### Sync files to the EVK
 
@@ -119,7 +122,7 @@ ls -l /dev/video*
 
 ### View on the EVK monitor
 
-With a monitor, keyboard, and browser connected directly to the EVK, open this address in the EVK's browser:
+With a monitor, mouse, and keyboard connected directly to the EVK, open this address in the EVK's browser:
 
 ```text
 http://127.0.0.1:8000
@@ -149,7 +152,7 @@ No VS Code port forwarding is needed for direct EVK or same-network access. If a
 
 1. Open **Configuration** and choose the computer strategy and number of rounds.
 2. Select **Start Match**.
-3. Hold Rock, Paper, or Scissors steady in the camera during the capture window after the countdown.
+3. Hold a rock, paper, or scissors gesture steady in front of the camera during the capture window after the countdown.
 4. Review the round result, commentary, score, and match history.
 
 The winning hand flashes green for each completed round. The final match result appears below the game board; the square flash still represents the most recent round, not the overall match winner.
@@ -219,7 +222,7 @@ The hand's role in the whole system, and the compute budget it shares with
 vision, the LLM and speech, is covered in
 [docs/speech-and-actuation.md](../docs/speech-and-actuation.md).
 
-#### Testing the hand on its own
+#### Testing the Amazing Hand
 
 When the hand misbehaves inside the demo there are four candidate causes — the
 serial port, group membership, the servo calibration, and the game logic — and
@@ -248,8 +251,7 @@ A clean exit only proves the servos accepted the commands, not that the poses
 look right, so the script ends by saying what to look for. If a finger sits
 visibly off, that motor's entry in `AMAZING_HAND_MIDDLE_CALIBRATION`
 (`app/config.py`) is the thing to change — order is motors 1–8, which is index,
-index, middle, middle, ring, ring, thumb, thumb. Try a value with
-`--cal 15,-13,0,-12,0,3,10,-10` first, then make it permanent.
+index, middle, middle, ring, ring, thumb, thumb. Try a value with calibration argument, e.g., `--cal 15,-13,0,-12,0,3,10,-10`, first, then make it permanent.
 
 ### Commentator
 
@@ -270,21 +272,17 @@ implementations ship in `app/commentary.py`:
 
 - `NullCommentator` produces no text.
 - `LlamaCppCommentator` warms and streams an opening response plus one short
-  remark per round from a local [llama.cpp](https://github.com/ggml-org/llama.cpp)
-  server (see [LLM commentary](#llm-commentary)). Any connection, HTTP, or parse
-  failure yields nothing, so a missing or unhealthy model never interrupts a match.
+  remark per round from a local [llama.cpp](https://github.com/ggml-org/llama.cpp) server (see [LLM commentary](#llm-commentary)). Any connection, HTTP, or parse failure yields nothing, so a missing or unhealthy model never interrupts a match.
 
 ### LLM commentary
 
-Commentary is **on by default** (`ENABLE_LLM_COMMENTARY=1`). It needs two things
+Commentary is on by default (`ENABLE_LLM_COMMENTARY=1`). It needs two things
 the repository cannot ship: a llama.cpp build with the Snapdragon Hexagon
-backend, and a GGUF model file. If either is missing, `start.sh` prints why,
-turns commentary off and starts the game anyway. Both can be rebuilt from scratch
-with the scripts in `scripts/`.
+backend, and a GGUF model file. If either is missing, `start.sh` turns commentary off, prints why, and starts the game anyway. Both can be rebuilt from scratch with the scripts in `scripts/`.
 
 #### 1. Build llama.cpp with the Hexagon backend
 
-The HTP kernels are Hexagon DSP code, so they need Qualcomm®'s Hexagon toolchain.
+The HTP kernels are Hexagon DSP code, so they need Qualcomm's Hexagon toolchain.
 Upstream ships that as a **`linux/amd64`** Docker image, which makes this a
 cross-compile: run it on an x86_64 machine, not on the EVK. (On an Apple Silicon
 Mac, enable Docker Desktop's Rosetta option first or expect a very long build.)
@@ -429,24 +427,15 @@ curl -s http://127.0.0.1:8080/v1/chat/completions \
   }'
 ```
 
-### Spoken commentary
+### Speech
 
-The app speaks the match-opening remark and each round result aloud. As the LLM
-streams a line, the text is split into sentence-sized chunks; each chunk is
-synthesized and queued for playback while later chunks are still being
-generated, so audio starts before the whole line is finished. Generation and
-synthesis run with detection paused so they do not contend with the detector;
-detection resumes while the queued audio plays out. The match waits for
-playback to finish before continuing. The on-screen text is revealed as a
-typewriter paced to each chunk's playback duration, so the words track the
-voice. To cover the delay while a remark is generated, a short canned lead-in
-(from `TTS_FILLERS` for rounds, or `TTS_OPENING_FILLERS` when a match starts,
-pre-synthesized at startup in the active voice) speaks the instant the result
-appears, then the real remark overwrites it once ready. During each round's
-countdown the voice also calls "Ready?" and the shoot words
-(`TTS_COUNTDOWN_READY` / `TTS_COUNTDOWN_WORDS`) in time with the on-screen
-animation. Any unreachable service, missing audio player, or playback error is
-logged and skipped, so audio problems never interrupt a match.
+The app speaks the match-opening remark and each round result aloud. As the LLM streams a line, the text is split into sentence-sized chunks; each chunk is synthesized and queued for playback while later chunks are still being generated, so audio starts before the whole line is finished. 
+
+Generation and synthesis run with detection paused so they do not contend with the detector; detection resumes while the queued audio plays out. The match waits for playback to finish before continuing. The on-screen text is revealed as a typewriter paced to each chunk's playback duration, so the words track the voice. 
+
+To cover the delay while a remark is generated, a short canned lead-in (from `TTS_FILLERS` for rounds, or `TTS_OPENING_FILLERS` when a match starts, pre-synthesized at startup in the active voice) speaks the instant the result appears, then the real remark overwrites it once ready. 
+
+During each round's countdown the voice also calls "Ready?" and the shoot words (`TTS_COUNTDOWN_READY` / `TTS_COUNTDOWN_WORDS`) in time with the on-screen animation. Any unreachable service, missing audio player, or playback error is logged and skipped, so audio problems never interrupt a match.
 
 > The reasoning behind this subsystem — why Piper and not MeloTTS, why the CPU,
 > how the licence is kept at arm's length, and why the audio player is resolved
