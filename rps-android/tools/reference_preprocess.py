@@ -7,7 +7,7 @@ reference_preprocess.py - the ground truth for the Android preprocessing.
 
 Two implementations of the same thing:
 
-  cv2_reference()   what rps.py / pte_perception.py do on the IQ9:
+  cv2_reference()   what rps.py / perception_pte.py do on the IQ9:
                     centre-crop -> cv2.resize (INTER_LINEAR) -> RGB -> /255 -> NCHW
   kotlin_mirror()   a line-for-line numpy mirror of core/.../Preprocess.kt
                     (no cv2, no Bitmap), used to prove the Kotlin algorithm

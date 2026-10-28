@@ -486,7 +486,7 @@ h5 {
 
 /* --- Hand target guide ---------------------------------------------------
    A framing hint, NOT a boundary. The classifier is fed the whole camera
-   square (pte_perception._preprocess centre-crops and resizes all of it), so a
+   square (perception_pte._preprocess centre-crops and resizes all of it), so a
    hand outside this box is still classified. The box shows the size and
    position the model was trained on, which is what actually helps accuracy.
 

@@ -89,7 +89,7 @@ class PreprocessGoldenTest {
 
     @Test
     fun roiSideMatchesTheIq9Detector() {
-        // pte_perception.roi_box(480) with ROI_FRACTION 0.6 is 288 pixels.
+        // perception_pte.roi_box(480) with ROI_FRACTION 0.6 is 288 pixels.
         val frame = RgbaFrame(ByteArray(640 * 480 * 4), 640, 480)
         assertEquals(288, Preprocess.roiSide(frame, 60))
         assertEquals(480, Preprocess.roiSide(frame, 100))
