@@ -16,7 +16,7 @@ The browser displays the live camera feed, gesture classification, a captured re
 
 ## Requirements
 
-- A Linux host with a USB camera exposed as a V4L2 device such as `/dev/video0`. This can be the Qualcomm Dragonwing™ IQ‑9075 EVK or any Linux machine.
+- A Linux host with a USB camera exposed as a V4L2 device such as `/dev/video0`. This can be the Qualcomm® Dragonwing™ IQ‑9075 EVK or any Linux machine.
 - Python 3.10 or later.
 - `models/model.pte`, a CPU XNNPACK classifier, and `models/labels.txt` (one label per line, in output order). Train the classifier with the [learning block](https://github.com/edgeimpulse/example-executorch-qnn/tree/main/blocks/learning-image-classifier) in the example repository and copy both files into `models/`. The input size is read from the model at startup, so a 96×96 or 160×160 export both work.
 - Camera permissions for the user running the app.

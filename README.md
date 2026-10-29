@@ -5,7 +5,7 @@ This repo contains two separate rock-paper-scissors demos. One version is a web 
 The demos use the ExecuTorch artifacts produced by
 [example-executorch-qnn](https://github.com/edgeimpulse/example-executorch-qnn) for classication of the human gesture. A single training run using that repo produces a portable CPU model (`model.pte`) and an NPU model (`model_qnn.pte`). 
 
-The web app demo can use the CPU model  or, if you are using a Qualcomm Dragonwing™ IQ-9075 SoC, the NPU model. The NPU model is compiled for the Hexagon™ v73 and is not meant to run anywhere else. The Android app uses the CPU model.
+The web app demo can use the CPU model  or, if you are using a Qualcomm® Dragonwing™ IQ-9075 SoC, the NPU model. The NPU model is compiled for the Hexagon™ v73 and is not meant to run anywhere else. The Android app uses the CPU model.
 
 | Demo | What it is | Runs on |
 |---|---|---|

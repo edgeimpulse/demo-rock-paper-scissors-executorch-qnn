@@ -2,7 +2,7 @@
 
 This demo is a small native Android app for playing a game of rock, paper, scissors against the phone. The phone's own camera is the input for the human gesture. The model runs on the phone's CPU through ExecuTorch's Android runtime, and the screen shows the a video feed preview, which model file is running (a hash), and how long each inference takes.
 
-The app uses the same model, `model.pte`, an output artifact from [example-executorch-qnn](https://github.com/edgeimpulse/example-executorch-qnn), that can be used on a Linux device. Nothing about the model changes between a Linux device (e.g., the Qualcomm Dragonwing™ IQ-9075 EVK) or a phone — only the app around it.
+The app uses the same model, `model.pte`, an output artifact from [example-executorch-qnn](https://github.com/edgeimpulse/example-executorch-qnn), that can be used on a Linux device. Nothing about the model changes between a Linux device (e.g., the Qualcomm® Dragonwing™ IQ-9075 EVK) or a phone — only the app around it.
 
 ```text
 IQ-9075:  USB camera   → Python preprocess → executorch (Python)         → XNNPACK → FastAPI game + web UI
