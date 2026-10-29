@@ -14,17 +14,17 @@ line between "we point at it" and "we ship it".
 
 | Component | License | Shipped here? |
 |---|---|---|
-| ExecuTorch, PyTorch, torchvision | BSD-3-Clause | no — pip |
-| llama.cpp (commentary engine) | MIT | no — built by `rps-amazing-hand/scripts/build-llama-hexagon.sh` |
+| `ExecuTorch`, `PyTorch`, `torchvision` | BSD-3-Clause | no — pip |
+| `llama.cpp` (commentary engine) | MIT | no — built by `rps-amazing-hand/scripts/build-llama-hexagon.sh` |
 | Piper (TTS engine, `piper-tts`) | **GPL-3.0-or-later** | no — pip, see below |
 | Amazing Hand — software | Apache-2.0 | no |
 | Amazing Hand — mechanical design | CC BY 4.0 | no — attribution required if you publish the CAD or photos of it |
 | `rustypot` (servo driver) | Apache-2.0 | no — pip |
-| FastAPI, httpx, onnxruntime | MIT | no — pip |
-| uvicorn, numpy | BSD | no — pip |
+| `FastAPI`, `httpx`, `onnxruntime` | MIT | no — pip |
+| `uvicorn`, `numpy` | BSD | no — pip |
 | `opencv-python` | Apache-2.0 | no — pip |
-| Atkinson Hyperlegible, Barlow (web fonts) | SIL OFL 1.1 | **yes** — `rps-amazing-hand/app/static/fonts/`, with the per-family license text alongside, as the OFL requires |
-| Qualcomm QNN SDK / `libqnn1` | Qualcomm proprietary | no — Ubuntu IoT PPA |
+| `Atkinson Hyperlegible`, `Barlow` (web fonts) | SIL OFL 1.1 | **yes** — `rps-amazing-hand/app/static/fonts/`, with the per-family license text alongside, as the OFL requires |
+| Qualcomm®  QNN SDK / `libqnn1` | Qualcomm proprietary | no — Ubuntu IoT PPA |
 
 ## Models and data
 
